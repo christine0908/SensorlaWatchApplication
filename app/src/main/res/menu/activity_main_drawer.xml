@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:title="@string/menu_home" />
+        <item
+            android:id="@+id/nav_login"
+            android:title="@string/menu_login" />
+        <item
+            android:id="@+id/nav_server"
+            android:title="@string/menu_server" />
+        <item
+            android:id="@+id/nav_device_id"
+            android:title="@string/menu_device_id" />
+        <item
+            android:id="@+id/nav_wo_list"
+            android:title="@string/menu_wo_list" />
+        <item
+            android:id="@+id/nav_logout"
+            android:title="@string/menu_logout" />
+        <item
+            android:id="@+id/nav_falldetection"
+            android:title="@string/menu_fall_detect" />
+        <item
+        android:id="@+id/nav_heartRate"
+        android:title="@string/menu_heart_rate" />
+        <item
+        android:id="@+id/nav_speech"
+        android:title="@string/menu_speech" />
+        <item
+            android:id="@+id/nav_stepcount"
+            android:title="@string/menu_step_counter" />
+    </group>
+
+</menu>

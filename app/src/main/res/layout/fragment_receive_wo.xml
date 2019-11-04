@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:weightSum="1"
+    android:background="@android:color/black"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.9"
+        android:orientation="vertical">
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:textAlignment="center">
+
+            <TextView
+                android:id="@+id/txtWOStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:singleLine="true"
+                android:text="@string/status"
+                android:textColor="@android:color/white"
+                android:textSize="15sp" />
+            <TextView
+                android:id="@+id/txtWOTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:singleLine="true"
+                android:text="@string/timestamp"
+                android:textColor="@android:color/white"
+                android:textSize="20sp" />
+            <TextView
+                android:id="@+id/txtWOName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/receiving_WO"
+                android:textAlignment="center"
+                android:textColor="@color/receivingWO"
+                android:textSize="@dimen/text_size_normal" />
+            <TextView
+                android:id="@+id/txtLocName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/dash"
+                android:textAlignment="center"
+                android:textColor="@color/locNAME"
+                android:textSize="@dimen/text_size_large"
+                android:textStyle="italic" />
+            <View
+                android:id="@+id/horizontal_rule"
+                android:layout_width="fill_parent"
+                android:layout_height="2dip"
+                android:background="@color/horizontalRule" />
+            <TextView
+                android:id="@+id/txtInstruction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/pleasewait"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/text_size_normal" />
+            <View
+                android:id="@+id/space"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/padding_large" />
+
+        </LinearLayout>
+    </ScrollView>
+    <TextView
+        android:id="@+id/sec"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/seconds"
+        android:layout_gravity="center"
+        android:textColor="@android:color/white"
+        android:visibility="invisible"/>
+    <LinearLayout
+        android:layout_weight="0.1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:background="?android:selectableItemBackground"
+        android:padding="@dimen/fab_margin">
+
+        <ImageButton
+            android:id="@+id/btnReject"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:src="@drawable/error"
+            style="?android:borderlessButtonStyle"
+            android:contentDescription="@string/image"
+            android:focusable="true"
+            android:paddingBottom="@dimen/margin_bottom"/>
+        <ImageButton
+            android:id="@+id/btnPause"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:src="@drawable/pause"
+            android:visibility="gone"
+            style="?android:borderlessButtonStyle"
+            android:contentDescription="@string/image"
+            android:focusable="true"
+            android:paddingBottom="@dimen/margin_bottom"/>
+        <ImageButton
+            android:id="@+id/btnAccept"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:src="@drawable/accept"
+            style="?android:borderlessButtonStyle"
+            android:contentDescription="@string/image"
+            android:focusable="true"
+            android:paddingBottom="@dimen/margin_bottom"/>
+    </LinearLayout>
+</LinearLayout>
+
+
+
+

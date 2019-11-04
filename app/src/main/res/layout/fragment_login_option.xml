@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/black">
+
+    <TextView
+        android:id="@+id/login_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin"
+        android:layout_marginBottom="@dimen/margin"
+        android:fontFamily="@font/google"
+        android:gravity="center_horizontal"
+        android:text="@string/menu_login"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/text_size_small"
+        android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="@dimen/margin_left"
+            android:layout_marginRight="@dimen/margin_left">
+            <Button
+                android:id="@+id/faceRecognitionBtn"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/signincard_edge"
+                android:fontFamily="@font/google"
+                android:paddingTop="@dimen/padding_top"
+                android:paddingBottom="@dimen/padding_top"
+                android:text="@string/faceID"
+                android:textAllCaps="false"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/text_size_small" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/activity_horizontal_margin" />
+
+            <Button
+                android:id="@+id/emailAndpasswordBtn"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/email"
+                android:background="@drawable/signincard_edge"
+                android:fontFamily="@font/google"
+                android:paddingTop="@dimen/padding_top"
+                android:paddingBottom="@dimen/padding_top"
+                android:textAllCaps="false"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/text_size_small" />
+
+        </LinearLayout>
+    </LinearLayout>
+

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+    <color name="stroke">#B1BCBE</color>
+    <color name="solid">#808080</color>
+    <color name="receivingWO">#ADD8E6</color>
+    <color name="locNAME">#FFDE00</color>
+    <color name="horizontalRule">#4980B9</color>
+    <color name="signbtn">#d67601</color>
+
+    <color name="colorButton">#3d5f51</color>
+    <color name="colorButtonActive">#1bea95</color>
+
+    <color name="statuscolor">#2ECC71</color>
+</resources>

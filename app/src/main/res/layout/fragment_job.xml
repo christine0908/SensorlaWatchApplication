@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/black">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:src="@drawable/cleaner"
+        android:gravity="center"
+        android:layout_weight=".2"
+        android:contentDescription="@string/image"/>
+
+    <TextView
+        android:id="@+id/frag_home__job_text"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".6"
+        android:text="@string/waiting_for_job"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:fontFamily="@font/google"
+        android:textAlignment="center"
+        android:textSize="@dimen/text_size_normal"/>
+
+</LinearLayout>

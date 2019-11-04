@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/black"
+    android:layout_height="match_parent"
+    tools:context=".ui.HeartRate.HeartRateFragment"
+    android:id="@+id/watch_view_stub"
+    tools:deviceIds="wear_round">
+
+    <TextView
+        android:id="@+id/heartRateText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="--"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/text_size_large" />
+
+    <TextView
+        android:id="@+id/bpmText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bpm"
+        android:textColor="@android:color/white"
+        android:layout_below="@id/heartRateText"
+        android:layout_marginLeft="3dp"
+        android:layout_centerHorizontal="true"
+        android:textSize="@dimen/text_size_normal"/>
+
+    <Button
+        android:id="@+id/btnStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/bpmText"
+        android:layout_marginTop="5dp"
+        android:visibility="gone"
+        android:text="Start"
+        android:textSize="@dimen/text_size_normal"/>
+
+    <Button
+        android:id="@+id/btnPause"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/bpmText"
+        android:layout_marginTop="5dp"
+        android:visibility="gone"
+        android:text="Stop"
+        android:textSize="@dimen/text_size_normal"/>
+
+</RelativeLayout>

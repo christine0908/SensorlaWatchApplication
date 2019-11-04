@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black"
+    tools:context=".ui.Logout.LogoutFragment"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="center"
+        android:text="@string/logout_msg"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:fontFamily="@font/google"
+        android:textAlignment="center"
+        android:textSize="@dimen/text_size_normal" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="25dp"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:theme="@style/Material"
+        android:id="@+id/logoutBT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:fontFamily="@font/google"
+        android:textStyle="bold"
+        android:textSize="@dimen/text_size_small"
+        android:text="Logout" />
+
+</LinearLayout>

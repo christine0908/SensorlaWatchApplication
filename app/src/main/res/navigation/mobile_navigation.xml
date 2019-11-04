@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="sensorla.watch.application.ui.Home.HomeFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/nav_login"
+        android:name="sensorla.watch.application.ui.Login.LoginOptionFragment"
+        android:label="@string/menu_login"
+        tools:layout="@layout/fragment_login_option" />
+
+    <fragment
+        android:id="@+id/nav_server"
+        android:name="sensorla.watch.application.ui.Server.ServerFragment"
+        android:label="@string/menu_server"
+        tools:layout="@layout/fragment_server" />
+
+    <fragment
+        android:id="@+id/nav_device_id"
+        android:name="sensorla.watch.application.ui.DeviceID.DeviceIDFragment"
+        android:label="@string/menu_device_id"
+        tools:layout="@layout/fragment_device_id" />
+
+    <fragment
+        android:id="@+id/nav_wo_list"
+        android:name="sensorla.watch.application.ui.WaitingForJob.CardFragment"
+        android:label="@string/menu_wo_list"
+        tools:layout="@layout/fragment_card" />
+
+    <fragment
+        android:id="@+id/nav_logout"
+        android:name="sensorla.watch.application.ui.Logout.LogoutFragment"
+        android:label="@string/menu_logout"
+        tools:layout="@layout/fragment_logout" />
+
+    <fragment
+        android:id="@+id/nav_falldetection"
+        android:name="sensorla.watch.application.ui.FallDetection.FallDetectionFragment"
+        android:label="@string/menu_fall_detect"
+        tools:layout="@layout/fragment_fall_detection" />
+
+    <fragment
+        android:id="@+id/nav_heartRate"
+        android:name="sensorla.watch.application.ui.HeartRate.HeartRateFragment"
+        android:label="@string/menu_heart_rate"
+        tools:layout="@layout/fragment_heart_rate" />
+
+    <fragment
+        android:id="@+id/nav_speech"
+        android:name="sensorla.watch.application.ui.SpeechtoText.SpeechtoTextFragment"
+        android:label="@string/menu_speech"
+        tools:layout="@layout/fragment_speechto_text" />
+
+    <fragment
+        android:id="@+id/nav_stepcount"
+        android:name="sensorla.watch.application.ui.StepCounter.StepCounterFragment"
+        android:label="@string/menu_step_counter"
+        tools:layout="@layout/fragment_step_counter" />
+
+</navigation>

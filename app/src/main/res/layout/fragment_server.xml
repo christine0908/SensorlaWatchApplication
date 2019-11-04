@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@android:color/black">
+
+   <EditText
+       android:id="@+id/server_input"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_gravity="center"
+       android:textAlignment="center"
+       android:hint="@string/servername"
+       android:textColorHint="@color/solid"
+       android:textColor="@android:color/white"
+       android:backgroundTint="@android:color/white"/>
+
+   <EditText
+       android:id="@+id/server_pwd"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_gravity="center"
+       android:fontFamily="@font/google"
+       android:hint="@string/serverPWD"
+       android:inputType="number"
+       android:textAlignment="center"
+       android:textColor="@android:color/white"
+       android:textColorHint="@android:color/white"
+       android:backgroundTint="@android:color/white"
+       android:textStyle="bold"/>
+
+   <com.google.android.material.button.MaterialButton
+       android:theme="@style/Material"
+       android:id="@+id/connect"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:fontFamily="@font/google"
+       android:text="@string/connect"
+       android:textColor="@android:color/black"
+       android:textStyle="bold" />
+</LinearLayout>
