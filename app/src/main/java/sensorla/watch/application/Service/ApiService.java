@@ -1,14 +1,15 @@
 package sensorla.watch.application.Service;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
-import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 import sensorla.watch.application.FaceRecognition.Model.*;
-import sensorla.watch.application.NewHeartRate.NewModel;
+import sensorla.watch.application.Model.HeartRateModel;
 
 public interface ApiService {
 
@@ -86,12 +87,17 @@ public interface ApiService {
     //HeartRate
     @Headers("Authorization: Basic SUZTQ0FQSTpASUZTQ0FQSUlDSElOSVNBTg==")
     @GET("UserHeartRate")
-    Call<String> HeartRate(@Query("userId") int UserId,
+    Call<String> uploadOneHeartRateData(@Query("userId") String UserId,
                            @Query("value") String value,
                            @Query("datetime") String datetime,
                            @Query("env") String env);
 
 
-    @POST("newheartrate")
-    Call<String> NewHeartRateApi(@Body NewModel mdl);
+    @POST("UserHeartRate")
+    Call<String> uploadListHeartRateData(@Body List<HeartRateModel> heartratedatas);
+
+
+// Delete this
+//    @POST("newheartrate")
+//    Call<String> NewHeartRateApi(@Body HeartRateModel mdl);
 }

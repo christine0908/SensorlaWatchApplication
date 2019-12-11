@@ -32,7 +32,7 @@ public class LocationTrack extends Service implements LocationListener {
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
     private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
     protected LocationManager locationManager;
-
+// looks like a datasource class that allows the mainactivity to talk to SQLiteOpenHelper
     public LocationTrack(Context mContext) {
         this.mContext = mContext;
         getLocation();

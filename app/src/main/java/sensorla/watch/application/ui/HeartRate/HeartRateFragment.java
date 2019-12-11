@@ -21,16 +21,16 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import sensorla.watch.application.NewHeartRate.NewModel;
+import sensorla.watch.application.Constants;
+import sensorla.watch.application.Model.HeartRateModel;
 import sensorla.watch.application.R;
 import sensorla.watch.application.Service.ApiService;
 import sensorla.watch.application.Service.ServiceGenerator.ServiceGenerator;
+import sensorla.watch.application.SqliteDatabase.HeartRate_DBHelper;
 import sensorla.watch.application.ui.Login.SaveSharedPreference;
 
 public class HeartRateFragment extends Fragment implements SensorEventListener {
@@ -78,7 +78,7 @@ public class HeartRateFragment extends Fragment implements SensorEventListener {
                 btnStart.setVisibility(ImageButton.VISIBLE);
                 mTextView.setText("--");
                 stopMeasure();
-                serviceApiCall();
+//                serviceApiCall();
             }
         });
         mSensorManager = (SensorManager) getActivity().getSystemService(Service.SENSOR_SERVICE);
@@ -89,12 +89,12 @@ public class HeartRateFragment extends Fragment implements SensorEventListener {
 
     private void serviceApiCall()
     {
-        final int userId = SaveSharedPreference.getUser_id(getActivity());
+        final String userId = String.valueOf(SaveSharedPreference.getUser_id(getActivity()));
         final String serverName = SaveSharedPreference.getEnvironment(getActivity());
         //create service
         final ApiService service = ServiceGenerator.createHeartRateService(ApiService.class);
 
-        final Call<String> apiCall = service.HeartRate(userId,Integer.toString(mHeartRate),now(),serverName);
+        final Call<String> apiCall = service.uploadOneHeartRateData(userId,Integer.toString(mHeartRate),now(),serverName);
         apiCall.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
@@ -112,39 +112,41 @@ public class HeartRateFragment extends Fragment implements SensorEventListener {
         });
     }
 
-    private void newApiCall()
-    {
-        final int userId = SaveSharedPreference.getUser_id(getActivity());
-        final String serverName = SaveSharedPreference.getEnvironment(getActivity());
-        //create service
-        // change "createHeartRateService" as per new service created in ServiceGenerator class
-        final ApiService service = ServiceGenerator.createNewService(ApiService.class);
 
-        // this is preparing the object to send to API
-        // change "HeartRate" to your new method created in ApiService and pass corresponding data for POST method over here
-        NewModel model = new NewModel();
-        model.setUserId(userId);
-        model.setServerName(serverName);
-        model.setHeartRate(mHeartRate);
-        // this line is requesting the API / calling the API
-        final Call<String> apiCall = service.NewHeartRateApi(model);
-// this is to get result from API
-        apiCall.enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                if(response.isSuccessful() && response.body() != null && response.body().contains("Success")){
-                    Toast.makeText(getActivity().getApplicationContext(), response.body(), Toast.LENGTH_SHORT).show();
-                }
-                else{
-                    Toast.makeText(getActivity().getApplicationContext(), response.body(), Toast.LENGTH_SHORT).show();
-                }
-            }
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                Toast.makeText(getActivity().getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
+
+//    private void newApiCall()
+//    {
+//        final String userId = String.valueOf(SaveSharedPreference.getUser_id(getActivity()));
+//        final String serverName = SaveSharedPreference.getEnvironment(getActivity());
+//        //create service
+//        // change "createHeartRateService" as per new service created in ServiceGenerator class
+//        final ApiService service = ServiceGenerator.createNewService(ApiService.class);
+//
+//        // this is preparing the object to send to API
+//        // change "HeartRate" to your new method created in ApiService and pass corresponding data for POST method over here
+//        HeartRateModel model = new HeartRateModel();
+//        model.setUserId(userId);
+//        model.setServerName(serverName);
+//        model.setHeartRate(mHeartRate);
+//        // this line is requesting the API / calling the API
+//        final Call<String> apiCall = service.NewHeartRateApi(model);
+//// this is to get result from API
+//        apiCall.enqueue(new Callback<String>() {
+//            @Override
+//            public void onResponse(Call<String> call, Response<String> response) {
+//                if(response.isSuccessful() && response.body() != null && response.body().contains("Success")){
+//                    Toast.makeText(getActivity().getApplicationContext(), response.body(), Toast.LENGTH_SHORT).show();
+//                }
+//                else{
+//                    Toast.makeText(getActivity().getApplicationContext(), response.body(), Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//            @Override
+//            public void onFailure(Call<String> call, Throwable t) {
+//                Toast.makeText(getActivity().getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//    }
 
 
     private void startMeasure() {
@@ -172,9 +174,15 @@ public class HeartRateFragment extends Fragment implements SensorEventListener {
 
                 Log.d("New Heart Rate :", mTextView.getText().toString());
 
-                if(mHeartRate > 130) {
-                    newApiCall();
+                if(mHeartRate > Constants.TRESHOLD_LIMIT) {
+//                    newApiCall();
+                    uploadOneHeartRateData();
                     Toast.makeText(getActivity(), "Reached Threshold", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    String userId = String.valueOf(SaveSharedPreference.getUser_id(getActivity()));
+                    HeartRate_DBHelper db = new HeartRate_DBHelper(getActivity());
+                    db.InsertHeartRate(mHeartRate + "", userId);
                 }
 
             }
@@ -204,5 +212,37 @@ public class HeartRateFragment extends Fragment implements SensorEventListener {
             }
         }
     }
+    private void uploadOneHeartRateData()
+    {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        String date = dateFormat.format(new Date());
+
+        final int userId = SaveSharedPreference.getUser_id(getActivity());
+        String userId1 = String.valueOf(userId);
+        final String serverName = SaveSharedPreference.getEnvironment(getActivity());
+        //create service
+        final ApiService service = ServiceGenerator.createHeartRateService(ApiService.class);
+
+
+        final Call<String> apiCall = service.uploadOneHeartRateData(userId1,String.valueOf(mHeartRate),date,serverName);
+        apiCall.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                // this shows api is working.
+                if(response.isSuccessful() && response.body().contains("Success")){
+                    Toast.makeText(getActivity(), response.body(), Toast.LENGTH_SHORT).show();
+
+                }
+                else{
+                    Toast.makeText(getActivity(), response.body(), Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 }
 

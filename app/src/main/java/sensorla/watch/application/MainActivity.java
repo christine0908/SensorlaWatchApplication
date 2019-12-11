@@ -11,6 +11,7 @@ import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
@@ -38,6 +39,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.common.util.Strings;
 import com.google.android.material.navigation.NavigationView;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -45,10 +49,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import sensorla.watch.application.Model.HeartRateModel;
 import sensorla.watch.application.Service.ApiService;
 import sensorla.watch.application.Service.ServiceGenerator.ServiceGenerator;
 import sensorla.watch.application.SqliteDatabase.DbHelper;
 
+import sensorla.watch.application.SqliteDatabase.HeartRate_DBHelper;
 import sensorla.watch.application.ui.DeviceID.DeviceIDFragment;
 import sensorla.watch.application.ui.HeartRate.HeartRateFragment;
 import sensorla.watch.application.ui.Home.HomeFragment;
@@ -65,15 +71,40 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     private LocalBroadcastManager broadcaster;
     private TextView deviceusername, deviceID, serverName;
     private DbHelper dbHelper = new DbHelper(this);
+    private HeartRate_DBHelper chrisDb = new HeartRate_DBHelper(this);
     private Timer bgTimer = new Timer("Background Timer");
     boolean doubleBackToExitPressedOnce = false;
     private String serverText;
+    private TextView batteryTxt;
 
+
+    private BroadcastReceiver mBatInfoReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
+            // this tells the % of watch is charged
+            if (batteryTxt != null) {
+                batteryTxt.setText(level + "%");
+            }
+
+            if(level >90 ) {
+
+                    int userId = SaveSharedPreference.getUser_id(MainActivity.this);
+                    List<HeartRateModel> model = chrisDb.GetHeartRate(String.valueOf(userId));
+                    if (model != null && !model.isEmpty()) {
+
+                        uploadListHeartRateData(model);
+                    }
+                }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        batteryTxt = (TextView) this.findViewById(R.id.batteryTxt);
 
         //control for no internet connection status
         if (isConnected()) {
@@ -92,15 +123,16 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                 dbHelper.UploadWorkOrderDetailToServer();
             }
         };
-        bgTimer.schedule(task, 10, 10 * 1000);
+        bgTimer.schedule(task, 10, 2 * 60 * 1000);
 
         TimerTask task2 = new TimerTask() {
             public void run() {
                 Intent intent = new Intent(MainActivity.this, TrackService.class);
-                startService(intent);
+//                startService(intent);
             }
         };
         bgTimer.schedule(task2, 10, 120 * 1000);
+        this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
     }
 
@@ -397,6 +429,38 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     public void logOut() {
         Helper.goToFragment(this, new HomeFragment());
         manageMenuItem();
+    }
+
+    private void uploadListHeartRateData(List<HeartRateModel> models)
+    {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        String date = dateFormat.format(new Date());
+
+        final int userId = SaveSharedPreference.getUser_id(this);
+        String userId1 = String.valueOf(userId);
+        final String serverName = SaveSharedPreference.getEnvironment(this);
+        //create service
+        final ApiService service = ServiceGenerator.createHeartRateService(ApiService.class);
+
+        final Call<String> apiCall = service.uploadListHeartRateData(models);
+        apiCall.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if(response.isSuccessful() && response.body().contains("Success")){
+                    chrisDb.DeleteHeartRates(String.valueOf(userId));
+                    Toast.makeText(MainActivity.this, response.body(), Toast.LENGTH_SHORT).show();
+                }
+                else{
+
+                    Toast.makeText(MainActivity.this, response.body(), Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+
+                Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
