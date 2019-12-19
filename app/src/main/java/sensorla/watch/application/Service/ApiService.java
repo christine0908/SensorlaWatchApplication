@@ -1,6 +1,7 @@
 package sensorla.watch.application.Service;
 
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -93,8 +94,9 @@ public interface ApiService {
                            @Query("env") String env);
 
 
+    @Headers("Authorization: Basic SUZTQ0FQSTpASUZTQ0FQSUlDSElOSVNBTg==")
     @POST("UserHeartRate")
-    Call<String> uploadListHeartRateData(@Body List<HeartRateModel> heartratedatas);
+    Call<String> uploadListHeartRateData(@Body List<Map<String, Object>> heartratedatas);
 
 
 // Delete this
