@@ -1,12 +1,14 @@
 package sensorla.watch.application.ui.HeartRate;
 
 import android.app.Service;
+import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -41,13 +43,20 @@ public class HeartRateFragment extends Fragment implements SensorEventListener {
         private Sensor mHeartRateSensor;
         public int mHeartRate;
         public float mHeartRateFloat;
+    private HeartRate_DBHelper db;
+
 
     private long lastRecordTime = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        db = new HeartRate_DBHelper(context);
     }
 
     @Override
@@ -58,6 +67,8 @@ public class HeartRateFragment extends Fragment implements SensorEventListener {
         btnStart = root.findViewById(R.id.btnStart);
         btnPause = root.findViewById(R.id.btnPause);
         mTextView=root.findViewById(R.id.heartRateText);
+
+//        db = new HeartRate_DBHelper(getActivity());
 
 
 
@@ -87,54 +98,18 @@ public class HeartRateFragment extends Fragment implements SensorEventListener {
         return root;
     }
 
-    private void serviceApiCall()
-    {
-        final String userId = String.valueOf(SaveSharedPreference.getUser_id(getActivity()));
-        final String serverName = SaveSharedPreference.getEnvironment(getActivity());
-        //create service
-        final ApiService service = ServiceGenerator.createHeartRateService(ApiService.class);
-
-        final Call<String> apiCall = service.uploadOneHeartRateData(userId,Integer.toString(mHeartRate),now(),serverName);
-        apiCall.enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                if(response.isSuccessful() && response.body().contains("Success")){
-                    Toast.makeText(getActivity().getApplicationContext(), response.body(), Toast.LENGTH_SHORT).show();
-                }
-                else{
-                    Toast.makeText(getActivity().getApplicationContext(), response.body(), Toast.LENGTH_SHORT).show();
-                }
-            }
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                Toast.makeText(getActivity().getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-
-
-//    private void newApiCall()
+//    private void serviceApiCall()
 //    {
 //        final String userId = String.valueOf(SaveSharedPreference.getUser_id(getActivity()));
 //        final String serverName = SaveSharedPreference.getEnvironment(getActivity());
 //        //create service
-//        // change "createHeartRateService" as per new service created in ServiceGenerator class
-//        final ApiService service = ServiceGenerator.createNewService(ApiService.class);
+//        final ApiService service = ServiceGenerator.createHeartRateService(ApiService.class);
 //
-//        // this is preparing the object to send to API
-//        // change "HeartRate" to your new method created in ApiService and pass corresponding data for POST method over here
-//        HeartRateModel model = new HeartRateModel();
-//        model.setUserId(userId);
-//        model.setServerName(serverName);
-//        model.setHeartRate(mHeartRate);
-//        // this line is requesting the API / calling the API
-//        final Call<String> apiCall = service.NewHeartRateApi(model);
-//// this is to get result from API
+//        final Call<String> apiCall = service.uploadOneHeartRateData(userId,Integer.toString(mHeartRate),now(),serverName);
 //        apiCall.enqueue(new Callback<String>() {
 //            @Override
 //            public void onResponse(Call<String> call, Response<String> response) {
-//                if(response.isSuccessful() && response.body() != null && response.body().contains("Success")){
+//                if(response.isSuccessful() && response.body().contains("Success")){
 //                    Toast.makeText(getActivity().getApplicationContext(), response.body(), Toast.LENGTH_SHORT).show();
 //                }
 //                else{
@@ -149,6 +124,10 @@ public class HeartRateFragment extends Fragment implements SensorEventListener {
 //    }
 
 
+
+
+
+
     private void startMeasure() {
       boolean sensorRegistered = mSensorManager.registerListener(this, mHeartRateSensor, SensorManager.SENSOR_DELAY_NORMAL);
         Log.d("Sensor Status:", " Sensor registered: " + (sensorRegistered ? "yes" : "no"));
@@ -161,7 +140,7 @@ public class HeartRateFragment extends Fragment implements SensorEventListener {
     public void onSensorChanged(SensorEvent event) {
 
         if(event.sensor.getType()==Sensor.TYPE_HEART_RATE){
-            long waitTime = 1000 * 60 * 5;
+            long waitTime = 1000 * 60 * 1;
             long currentTime = System.currentTimeMillis();
             if((currentTime - lastRecordTime) > waitTime) {
                 lastRecordTime = currentTime;
@@ -181,7 +160,6 @@ public class HeartRateFragment extends Fragment implements SensorEventListener {
                 }
                 else{
                     String userId = String.valueOf(SaveSharedPreference.getUser_id(getActivity()));
-                    HeartRate_DBHelper db = new HeartRate_DBHelper(getActivity());
                     db.InsertHeartRate(mHeartRate + "", userId);
                 }
 
@@ -194,7 +172,7 @@ public class HeartRateFragment extends Fragment implements SensorEventListener {
         return fromDate(date);
     }
     public String fromDate(Date date) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return dateFormat.format(date);
     }
 
@@ -214,7 +192,7 @@ public class HeartRateFragment extends Fragment implements SensorEventListener {
     }
     private void uploadOneHeartRateData()
     {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String date = dateFormat.format(new Date());
 
         final int userId = SaveSharedPreference.getUser_id(getActivity());

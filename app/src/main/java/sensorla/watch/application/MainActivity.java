@@ -40,8 +40,11 @@ import com.google.android.gms.common.util.Strings;
 import com.google.android.material.navigation.NavigationView;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -65,6 +68,10 @@ import sensorla.watch.application.ui.Logout.LogoutFragment;
 import sensorla.watch.application.ui.Server.ServerFragment;
 import sensorla.watch.application.ui.Tracking.TrackService;
 import sensorla.watch.application.ui.WaitingForJob.CardFragment;
+import sensorla.watch.application.Constants;
+
+import static sensorla.watch.application.Constants.lastRecordTime;
+import static sensorla.watch.application.Constants.waitTime;
 
 public class MainActivity extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener {
     private AppBarConfiguration mAppBarConfiguration;
@@ -76,35 +83,15 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     boolean doubleBackToExitPressedOnce = false;
     private String serverText;
     private TextView batteryTxt;
+    private BroadcastReceiver  mBatInfoReceiver;
 
 
-    private BroadcastReceiver mBatInfoReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
-            // this tells the % of watch is charged
-            if (batteryTxt != null) {
-                batteryTxt.setText(level + "%");
-            }
 
-            if(level >90 ) {
-
-                    int userId = SaveSharedPreference.getUser_id(MainActivity.this);
-                    List<HeartRateModel> model = chrisDb.GetHeartRate(String.valueOf(userId));
-                    if (model != null && !model.isEmpty()) {
-
-                        uploadListHeartRateData(model);
-                    }
-                }
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        batteryTxt = (TextView) this.findViewById(R.id.batteryTxt);
 
         //control for no internet connection status
         if (isConnected()) {
@@ -164,6 +151,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
         View headerView = navigationView.getHeaderView(0);
         deviceID = headerView.findViewById(R.id.device_ID);
         serverName = headerView.findViewById(R.id.server_Name);
+        batteryTxt = headerView.findViewById(R.id.batteryTxt);
 
         if (!Strings.isEmptyOrWhitespace(deviceId))
             deviceID.setText(deviceId);
@@ -183,8 +171,34 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
 
             serverName.setText(serverText);
 
+            mBatInfoReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+
+
+                    int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
+                    // this tells the % of watch is charged
+                    if (batteryTxt != null) {
+                        batteryTxt.setText(level + "%");
+                    }
+                    if (level > 90) {
+                        long crntTime = System.currentTimeMillis();
+                        if((crntTime - lastRecordTime) >= waitTime) {
+                            lastRecordTime = crntTime;
+                            int userId = SaveSharedPreference.getUser_id(MainActivity.this);
+                            List<HeartRateModel> model = chrisDb.GetHeartRate(String.valueOf(userId));
+                            if (model != null && !model.isEmpty()) {
+                                uploadListHeartRateData(model);
+                            }
+                        }
+                    }
+
+
+                }
+            };
+
         }
-    }
+    };
 
     public void manageMenuItem() {
         final DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -396,7 +410,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
 
     @Override
     public void onBackStackChanged() {
-        //getSupportFragmentManager().popBackStackImmediate();
+        getSupportFragmentManager().popBackStackImmediate();
     }
 
     //check network status
@@ -433,7 +447,19 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
 
     private void uploadListHeartRateData(List<HeartRateModel> models)
     {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        List<Map<String, Object>> list = new ArrayList<>();
+        for(HeartRateModel model : models)
+        {
+            Map<String, Object> map = new HashMap<>();
+            map.put("User_Id", model.getUser_Id());
+            map.put("CreatedDate", model.getDatetime());
+            // need env to call API
+            map.put("env", model.getEnv());
+            map.put("Value", model.getValue());
+            list.add(map);
+        }
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String date = dateFormat.format(new Date());
 
         final int userId = SaveSharedPreference.getUser_id(this);
@@ -442,7 +468,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
         //create service
         final ApiService service = ServiceGenerator.createHeartRateService(ApiService.class);
 
-        final Call<String> apiCall = service.uploadListHeartRateData(models);
+        final Call<String> apiCall = service.uploadListHeartRateData(list);
         apiCall.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {

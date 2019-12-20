@@ -23,9 +23,10 @@ public class HeartRate_DBHelper extends SQLiteOpenHelper {
 
     // TABLE_NAME_1 -column names
     private static final String HEART_RATE_ID = "heart_rate_id";
-    private static final String HEART_RATE = "heart_rate";
-    private static final String RECORDED_DATETIME = "recorded_datetime"; //DateTime
+    private static final String VALUE = "value";
+    private static final String CREATED_DATE = "created_date"; //DateTime
     private static final String USER_ID = "user_id";
+    private static final String  ENV = "env";
 
     // initialise the database and null is refering to the cursors
     public HeartRate_DBHelper( Context context) {
@@ -33,11 +34,7 @@ public class HeartRate_DBHelper extends SQLiteOpenHelper {
     }
 
     private static final String CREATE_TABLE_Heartrate =
-            "CREATE TABLE "+ TABLE_NAME_HEARTRATE +
-                    "(" + HEART_RATE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                    + HEART_RATE + " TEXT, "
-                    + USER_ID + " TEXT, "
-                    + RECORDED_DATETIME + " TEXT )";
+            String.format("CREATE TABLE %s(%s INTEGER PRIMARY KEY AUTOINCREMENT, %s TEXT, %s TEXT, %s TEXT, %s TEXT)", TABLE_NAME_HEARTRATE, HEART_RATE_ID, VALUE, USER_ID, CREATED_DATE, ENV);
 
     private static final String DROP_TABLE_Heartrate ="DROP TABLE IF EXISTS " + TABLE_NAME_HEARTRATE;
 
@@ -66,20 +63,24 @@ public class HeartRate_DBHelper extends SQLiteOpenHelper {
 
 
 
-    public boolean InsertHeartRate(String heart_rate, String user_id) {
+    public boolean InsertHeartRate(String value, String user_id) {
         try {
             //Get the Data Repository in write mode. means get access to database
-            SQLiteDatabase db = getWritableDatabase();
+             SQLiteDatabase db = getWritableDatabase();
+
             //Create a new map of values, where column names are the keys
             // say what values you want to insert by creating a ContentValues object, this is used to hold name/value pairs.
+            // below put into DataSource class
             ContentValues cValues = new ContentValues();
-            cValues.put(HEART_RATE, heart_rate);
-            cValues.put(RECORDED_DATETIME, now());
+
+            cValues.put(CREATED_DATE, now());
             cValues.put(USER_ID,user_id);
+            cValues.put(VALUE,value);
+            cValues.put(ENV,"3");
             // finally use insert method after inserting all above in one single ROW.
-            db.insert(TABLE_NAME_HEARTRATE, null, cValues);
+            long n = db.insert(TABLE_NAME_HEARTRATE, null, cValues);
             db.close();
-            return true;
+             return true;
         }
         catch (Exception e) {
             return false;
@@ -92,8 +93,8 @@ public class HeartRate_DBHelper extends SQLiteOpenHelper {
 //                " FROM " + TABLE_NAME_HEARTRATE + " where " + USER_ID + " =?";
 
         String query = "SELECT * " +
-                " FROM " + TABLE_NAME_HEARTRATE + " where " + USER_ID + " =? AND " +  HEART_RATE + "<" + Constants.TRESHOLD_LIMIT;
-
+                " FROM " + TABLE_NAME_HEARTRATE + " where " + USER_ID + " =? AND " +  VALUE + "<120" ;
+        List<HeartRateModel> NewModelList = new ArrayList<>();
         Cursor cursor = db.rawQuery(query, new String[]{userId});
 //        Cursor cursor = db.query(TABLE_NAME_HEARTRATE,new String[]{
 //                        USER_ID},
@@ -101,19 +102,23 @@ public class HeartRate_DBHelper extends SQLiteOpenHelper {
 
         if(cursor != null && cursor.moveToFirst())
         {
-            List<HeartRateModel> HeartRateList = new ArrayList<>();
 
-            while (cursor.moveToNext()){
-                HeartRateModel heartRateModel = new HeartRateModel() ;
-                heartRateModel.setUserId(getDbString(cursor, USER_ID));
-                heartRateModel.setDatetime(getDbString(cursor, RECORDED_DATETIME));
-                heartRateModel.setValue(getDbString(cursor, HEART_RATE));
-                HeartRateList.add(heartRateModel);
+
+            while (!cursor.isAfterLast()){
+                HeartRateModel model = new HeartRateModel() ;
+                model.setUser_Id(getDbString(cursor, USER_ID));
+                model.setDatetime(getDbString(cursor, CREATED_DATE));
+                model.setValue(getDbString(cursor, VALUE));
+                model.setEnv(getDbString(cursor,ENV));
+                NewModelList.add(model);
+                cursor.moveToNext();
             }
-            return HeartRateList;
+             return NewModelList;
         }
         return null;
     }
+
+
 
     public void DeleteHeartRates(String userId) {
         SQLiteDatabase db = getWritableDatabase();
@@ -128,14 +133,14 @@ public class HeartRate_DBHelper extends SQLiteOpenHelper {
 
     public Date toDate(String date) {
         try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             return dateFormat.parse(date);
         }
         catch (Exception e) { return null; }
     }
 
     public String fromDate(Date date) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return dateFormat.format(date);
     }
 

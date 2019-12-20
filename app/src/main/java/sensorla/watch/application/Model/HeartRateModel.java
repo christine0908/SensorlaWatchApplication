@@ -5,41 +5,41 @@ public class HeartRateModel {
     public HeartRateModel() {
     }
 
-    public HeartRateModel(String userId, String value, String datetime, String env) {
-        this.UserId = userId;
-        this.value = value;
-        this.datetime = datetime;
+    public HeartRateModel(String userId, String value, String CreatedDate, String env) {
+        this.User_Id = userId;
+        this.Value = Value;
+        this.CreatedDate = CreatedDate;
         this.env = env;
     }
 
-    private String UserId;
-    private String value;
-    private String datetime;
+    private String User_Id;
+    private String Value;
+    private String CreatedDate;
     private String env;
     private int HeartRateID;
 
-    public String getUserId() {
-        return UserId;
+    public String getUser_Id() {
+        return User_Id;
     }
 
-    public void setUserId(String userId) {
-        UserId = userId;
+    public void setUser_Id(String User_Id) {
+        User_Id = User_Id;
     }
 
     public String getValue() {
-        return value;
+        return Value;
     }
 
     public void setValue(String value) {
-        this.value = value;
+        this.Value = value;
     }
 
     public String getDatetime() {
-        return datetime;
+        return CreatedDate;
     }
 
-    public void setDatetime(String datetime) {
-        this.datetime = datetime;
+    public void setDatetime(String CreatedDate) {
+        this.CreatedDate = CreatedDate;
     }
 
     public String getEnv() {
