@@ -119,7 +119,6 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
             }
         };
         bgTimer.schedule(task2, 10, 120 * 1000);
-        this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
     }
 
@@ -181,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                     if (batteryTxt != null) {
                         batteryTxt.setText(level + "%");
                     }
-                    if (level > 90) {
+                    if (level > 20) {
                         long crntTime = System.currentTimeMillis();
                         if((crntTime - lastRecordTime) >= waitTime) {
                             lastRecordTime = crntTime;
@@ -197,6 +196,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                 }
             };
 
+            this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         }
     };
 
@@ -459,9 +459,6 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
             list.add(map);
         }
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String date = dateFormat.format(new Date());
-
         final int userId = SaveSharedPreference.getUser_id(this);
         String userId1 = String.valueOf(userId);
         final String serverName = SaveSharedPreference.getEnvironment(this);
@@ -472,7 +469,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
         apiCall.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-                if(response.isSuccessful() && response.body().contains("Success")){
+                if(response.isSuccessful() && response.body().equals("Success.")){
                     chrisDb.DeleteHeartRates(String.valueOf(userId));
                     Toast.makeText(MainActivity.this, response.body(), Toast.LENGTH_SHORT).show();
                 }

@@ -23,7 +23,7 @@ public class HeartRateModel {
     }
 
     public void setUser_Id(String User_Id) {
-        User_Id = User_Id;
+        this.User_Id = User_Id;
     }
 
     public String getValue() {

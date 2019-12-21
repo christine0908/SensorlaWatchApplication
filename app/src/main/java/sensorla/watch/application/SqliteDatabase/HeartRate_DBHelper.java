@@ -92,7 +92,7 @@ public class HeartRate_DBHelper extends SQLiteOpenHelper {
 //        String query = "SELECT * " +
 //                " FROM " + TABLE_NAME_HEARTRATE + " where " + USER_ID + " =?";
 
-        String query = "SELECT * " +
+        String query = "SELECT *" +
                 " FROM " + TABLE_NAME_HEARTRATE + " where " + USER_ID + " =? AND " +  VALUE + "<120" ;
         List<HeartRateModel> NewModelList = new ArrayList<>();
         Cursor cursor = db.rawQuery(query, new String[]{userId});
